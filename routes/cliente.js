@@ -3,6 +3,20 @@ let Cliente = require('../models/cliente');
 
 let app = express();
 
+app.get('/', (req, res)=>{
+    Cliente.find({}).exec((err, data)=>{
+        if(err){
+            return res.status(500).json({
+                error: err
+            });
+        }
+        res.status(200).json({
+            clientes: data
+        })
+    })
+})
+
+
 app.post('/', (req, res)=>{
     let body = req.body;
     let cliente = new Cliente({
