@@ -3,6 +3,7 @@ let unique = require('mongoose-unique-validator');
 
 let ClienteSchema = new mongoose.Schema({
     nombre: String,
+    termino: String,
     cif: {type: String, unique: true},
     direccion: {
         calle: String,

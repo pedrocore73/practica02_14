@@ -21,6 +21,7 @@ app.post('/', (req, res)=>{
     let body = req.body;
     let cliente = new Cliente({
         nombre: body.nombre,
+        termino: (body.nombre).normalize('NFD').replace(/([^n\u0300-\u036f]|n(?!\u0303(?![\u0300-\u036f])))[\u0300-\u036f]+/gi,"$1").normalize().toLowerCase(),
         cif: body.cif,
         direccion: body.direccion,
         email: body.email,
