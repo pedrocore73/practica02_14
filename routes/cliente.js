@@ -16,6 +16,21 @@ app.get('/', (req, res)=>{
     })
 })
 
+app.get('/search/:nombre', (req, res)=>{
+    let termino = (req.params.nombre).normalize('NFD').replace(/([^n\u0300-\u036f]|n(?!\u0303(?![\u0300-\u036f])))[\u0300-\u036f]+/gi,"$1").normalize().toLowerCase();
+    Cliente.find({termino: {$regex: termino}}).exec((err, data)=>{
+        if(err) {
+            return res.status(500).json({
+                error: err
+            })
+        }
+        res.status(200).json({
+            clientes: data
+        })
+    })
+
+})
+
 
 app.post('/', (req, res)=>{
     let body = req.body;
