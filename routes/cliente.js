@@ -39,4 +39,17 @@ app.post('/', (req, res)=>{
     })
 })
 
+app.delete('/:id', (req, res)=>{
+    Cliente.findByIdAndRemove(req.params.id, (err, data)=>{
+        if (err) {
+            return res.status(400).json({
+                error: err
+            })
+        }
+        res.status(200).json({
+            mensaje: 'Cliente eliminado correctamente'
+        })
+    })
+})
+
 module.exports = app;
