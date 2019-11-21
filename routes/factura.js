@@ -3,6 +3,32 @@ let Factura = require('../models/factura');
 
 let app = express();
 
+app.get('/', (req, res)=>{
+    Factura.find({}).exec((err, data)=>{
+        if(err){
+            return res.status(500).json({
+                error: err
+            });
+        }
+        res.status(200).json({
+            facturas: data
+        })
+    })
+})
+
+app.get('/:id', (req, res)=>{
+    Factura.findById(req.params.id, (err, data)=>{
+        if(err) {
+            return res.status(500).json({
+                error: err
+            })
+        }
+        res.status(200).json({
+            factura: data
+        })
+    })
+})
+
 app.post('/', (req, res)=>{
     let body = req.body;
     let factura = new Factura({
