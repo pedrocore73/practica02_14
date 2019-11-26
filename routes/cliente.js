@@ -38,6 +38,12 @@ app.get('/:id', (req, res)=>{
                 error: err
             })
         }
+        if(data === null) {
+            return res.status(200).json({
+                cliente: null,
+                mensaje: 'El cliente ya no existe'
+            })
+        }
         res.status(200).json({
             cliente: data
         })
@@ -75,6 +81,12 @@ app.put('/:id', (req, res)=>{
         if(err) {
             return res.status(500).json({
                 error: err
+            })
+        }
+        if(cliente === null) {
+            return res.status(200).json({
+                cliente: null,
+                mensaje: 'El cliente ya no existe'
             })
         }
         cliente.nombre = body.nombre;
