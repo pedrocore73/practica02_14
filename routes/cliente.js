@@ -31,6 +31,19 @@ app.get('/search/:nombre', (req, res)=>{
 
 })
 
+app.get('/:id', (req, res)=>{
+    Cliente.findById(req.params.id, (err, data)=>{
+        if(err) {
+            return res.status(500).json({
+                error: err
+            })
+        }
+        res.status(200).json({
+            cliente: data
+        })
+    })
+})
+
 
 app.post('/', (req, res)=>{
     let body = req.body;
@@ -52,6 +65,19 @@ app.post('/', (req, res)=>{
         res.status(200).json({
             mensaje: 'Cliente creado correctamente'
         });
+    })
+})
+
+app.put('/:id', (req, res)=>{
+    Cliente.findByIdAndUpdate(req.params.id, req.body, (err, data)=>{
+        if(err) {
+            return res.status(500).json({
+                error: err
+            })
+        }
+        res.status(200).json({
+            mensaje: 'El cliente ' + data.nombre + ' fue actualizado correctamente'
+        })
     })
 })
 
