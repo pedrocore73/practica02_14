@@ -69,16 +69,32 @@ app.post('/', (req, res)=>{
 })
 
 app.put('/:id', (req, res)=>{
-    Cliente.findByIdAndUpdate(req.params.id, req.body, (err, data)=>{
+    let body = req.body;
+
+    Cliente.findById(req.params.id, (err, cliente)=>{
         if(err) {
             return res.status(500).json({
                 error: err
             })
         }
-        res.status(200).json({
-            mensaje: 'El cliente ' + data.nombre + ' fue actualizado correctamente'
+        cliente.nombre = body.nombre;
+        cliente.termino = (body.nombre).normalize('NFD').replace(/([^n\u0300-\u036f]|n(?!\u0303(?![\u0300-\u036f])))[\u0300-\u036f]+/gi,"$1").normalize().toLowerCase();
+        cliente.direccion = body.direccion;
+        cliente.email = body.email;
+        cliente.formaPago = body.formaPago;
+
+        cliente.save((err, clienteMod)=>{
+            if(err) {
+                res.status(500).json({
+                    error: err
+                })
+            }
+            res.status(200).json({
+                mensaje: 'El cliente ' + clienteMod.nombre + ' fue modificado.'
+            })
         })
     })
+
 })
 
 app.delete('/:id', (req, res)=>{
