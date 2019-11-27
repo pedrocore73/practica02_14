@@ -1,5 +1,7 @@
 let express = require('express');
 let Factura = require('../models/factura');
+let PDFDocument = require('pdfkit');
+let fs = require('file-system');
 
 let app = express();
 
@@ -53,12 +55,33 @@ app.post('/', (req, res)=>{
             ultimaFra = 0;
         }
         factura.numero = ('0000' + (ultimaFra + 1)).slice(-4) + '-19';
-        factura.save((err, data)=>{
+
+        factura.save((err, facturaGuardada)=>{
             if(err) {
                 return res.status(400).json({
                     error: err
                 })
             }
+            const doc = new PDFDocument({
+                size: [595,842],
+                margins: {
+                    top: 42.5,
+                    bottom: 42.5,
+                    left: 42.5,
+                    right: 42.5
+                }
+            });
+
+            let cliente = facturaGuardada.cliente.nombre;
+
+            let fichero = (`./facturas/${facturaGuardada.numero}.pdf`).toString();
+
+            doc.fontSize(14).text(cliente, 200, 100);
+
+            doc.end();
+
+            doc.pipe(fs.createWriteStream(fichero));
+
             res.status(200).json({
                 mensaje: 'Factura creada correctamente'
             })
