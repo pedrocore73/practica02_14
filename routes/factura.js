@@ -17,12 +17,10 @@ function getRedond(valor, decimales) {
 }
 
 function getFormat(valor, decimales) {
-    let valorFormat = new Intl.NumberFormat('de-DE', {minimumFractionDigits: decimales}).format(valor) + ' €';
+    let valorFormat = new Intl.NumberFormat("en-EN", {minimumFractionDigits: decimales}).format(valor) + ' €';
+    valorFormat = valorFormat.replace(/[,.]/g, char => (char === ',' ? '.': ','));
     return valorFormat;
 }
-
-
-
 
 app.get('/', (req, res)=>{
     Factura.find({}).exec((err, data)=>{
@@ -99,7 +97,7 @@ app.post('/', (req, res)=>{
             let email = facturaGuardada.cliente.email;
             let numero = facturaGuardada.numero;
             let fechaUTC = new Date(facturaGuardada.fecha);
-            let fecha = fechaUTC.getDate() + '/' + fechaUTC.getMonth() + '/' + fechaUTC.getFullYear();
+            let fecha = fechaUTC.getDate() + '/' + (fechaUTC.getMonth() + 1) + '/' + fechaUTC.getFullYear();
             let concepto = facturaGuardada.concepto;
             let formaPago = facturaGuardada.formaPago;
             let base = getRedond(facturaGuardada.base, 2);
@@ -118,10 +116,10 @@ app.post('/', (req, res)=>{
             let fichero = (`./facturas/${facturaGuardada.numero}.pdf`).toString();
             doc.margins = { top: 72, bottom: 72, left: 72, right: 72};
 
-            doc.path("M20.78,25.11,45.88,0l-10,2.73a57.63,57.63,0,0,0-26,14.63L2.16,25.11a13.18,13.18,0,0,0,18.62,0ZM12.4,19.87A53.14,53.14,0,0,1,33.84,7L18.28,22.6a9.65,9.65,0,0,1-10.64,2Z").fillAndStroke("#eb642a");
-            doc.path("M17.36,63.28,25.1,71a13.15,13.15,0,0,0,0-18.61L0,27.3l2.73,10A57.63,57.63,0,0,0,17.36,63.28Zm5.24-8.37a9.63,9.63,0,0,1,2,10.63l-4.77-4.76A53.06,53.06,0,0,1,7,39.34Z").fillAndStroke("#1d2a38");
-            doc.path("M61.75,44.29a13.13,13.13,0,0,0-9.31,3.86l-25.1,25.1,10-2.73a57.63,57.63,0,0,0,26-14.63l7.74-7.74a13.15,13.15,0,0,0-9.3-3.86Zm-.94,9.1A53.12,53.12,0,0,1,39.37,66.22L54.94,50.65a9.65,9.65,0,0,1,10.64-2Z").fillAndStroke("#eb642a");
-            doc.path("M48.11,20.85,73.22,46,70.49,36A57.65,57.65,0,0,0,55.85,10L48.11,2.23A13.17,13.17,0,0,0,48.11,20.85Zm.48-13.14,4.76,4.76A53.14,53.14,0,0,1,66.18,33.91L50.61,18.35A9.65,9.65,0,0,1,48.59,7.71Z").fillAndStroke("#1d2a38");
+            doc.path("M64.47,79.1,89.58,54l-10,2.73a57.63,57.63,0,0,0-26,14.63L45.86,79.1a13.15,13.15,0,0,0,18.61,0ZM56.1,73.86A53.19,53.19,0,0,1,77.54,61L62,76.6a9.53,9.53,0,0,1-6.8,2.82,9.63,9.63,0,0,1-3.84-.79Z").fillAndStroke("#ec652a");
+            doc.path("M61.06,117.28,68.8,125a13.16,13.16,0,0,0,0-18.62L43.7,81.3l2.73,10A57.63,57.63,0,0,0,61.06,117.28Zm5.24-8.38a9.65,9.65,0,0,1,2,10.64l-4.77-4.77A53.12,53.12,0,0,1,50.73,93.33Z").fillAndStroke("#1e2a38");
+            doc.path("M105.44,98.29a13.11,13.11,0,0,0-9.3,3.85L71,127.25l10-2.73a57.65,57.65,0,0,0,26-14.64l7.74-7.74a13.08,13.08,0,0,0-9.31-3.85Zm-.93,9.09a53,53,0,0,1-21.44,12.83l15.57-15.57a9.61,9.61,0,0,1,10.64-2Z").fillAndStroke("#ec652a");
+            doc.path("M91.81,74.84,116.91,100l-2.73-10A57.63,57.63,0,0,0,99.55,64l-7.74-7.74A13.16,13.16,0,0,0,91.81,74.84Zm.48-13.13,4.76,4.76a53.12,53.12,0,0,1,12.83,21.44L94.31,72.34A9.63,9.63,0,0,1,92.29,61.71Z").fillAndStroke("#1e2a38");
 
             doc.font('Helvetica-Bold').fontSize(16).fill('#68676f').text('ACME, S.A.', 415, 60);
             doc.font('Helvetica').fontSize(14).fill('#68676f').text('Serrano Galvache, 56', 415, 82);
