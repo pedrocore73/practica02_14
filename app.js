@@ -28,6 +28,7 @@ app.use('/factura', factura);
 app.use('/email', email);
 
 app.use('/imagenes', express.static('imagenes'));
+app.use('/facturas', express.static('facturas'));
 
 app.listen(3000, ()=>{
     console.log('Servidor escuchando en http://localhost:3000');

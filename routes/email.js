@@ -26,8 +26,8 @@ app.get('/factura/:id', (req, res)=>{
 
         let mailOptions = {
             from: 'japanlenovo19@gmail.com',
-            to: 'pjimenez@corenetworks.es',
-            subject: 'Test email',
+            to: factura.cliente.email,
+            subject: `Nueva factura n. ${factura.numero} de ACME, S.A.`,
             html: `
                 <body style="margin: 0; padding: 20px; background-color: #cacaca;">
                     <table style="background-color: white; display: block; width: 600px; max-width: calc(100% - 40px); padding: 20px; margin: 20px auto;">
@@ -49,7 +49,9 @@ app.get('/factura/:id', (req, res)=>{
                             </tr>
                             <tr style="display: block; width: 100%">
                                 <td style="display: block; width: 100%; text-align: center;">
-                                    <a href="#" target="_blank" style="text-decoration: none; border: none; border-radius: 5px; background-color: #eb642a; color: white; font-family: Arial, Helvetica, sans-serif; padding: 12px 18px; margin: 40px 0;">Descargar factura</a>
+                                    <a href="http://localhost:3000/facturas/${factura.numero}.pdf" target="_blank" style="text-decoration: none; border: none; border-radius: 5px; background-color: #eb642a; color: white; font-family: Arial, Helvetica, sans-serif; padding: 12px 18px; margin: 40px 0;">
+                                       Descargar factura
+                                    </a>
                                 </td>
                             </tr>
                             <tr style="display: block; width: 100%">
@@ -62,7 +64,13 @@ app.get('/factura/:id', (req, res)=>{
                         </tbody>
                     </table>
                 </body>
-            `
+            `,
+            attachments: [
+                {
+                    path: `facturas/${factura.numero}.pdf`,
+                    contentType: 'application/pdf'
+                }
+            ]
         }
 
         transporter.sendMail(mailOptions, (err, info)=>{
@@ -70,6 +78,9 @@ app.get('/factura/:id', (req, res)=>{
                 console.log(err);
             } else {
                 console.log('Éxito total' + info.response);
+                res.status(200).json({
+                    mensaje: 'El correo electrónico fue enviado con éxito'
+                })
             }
         })
 
